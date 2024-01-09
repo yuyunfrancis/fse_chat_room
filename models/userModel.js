@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please password is required'],
     },
+    is_online: {
+      type: String,
+      default: '0',
+    },
   },
   {
     timestamps: true,

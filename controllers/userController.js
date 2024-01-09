@@ -3,6 +3,24 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
+exports.showRegisterForm = async (req, res) => {
+  try {
+    console.log('Rendering register.ejs');
+    res.render('register');
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+exports.showLoginForm = async (req, res) => {
+  try {
+    console.log('Rendering login.ejs');
+    res.render('login');
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 //@desc register a new user
 //@route POST /api/v1/users/register
 //@access Public
@@ -33,12 +51,13 @@ exports.registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res.status(201).json({
-      status: 'success',
-      data: {
-        user,
-      },
-    });
+    // res.status(201).json({
+    //   status: 'success',
+    //   data: {
+    //     user,
+    //   },
+    // });
+    res.render('register', { message: 'User created successfully' });
   } else {
     res.status(400);
     throw new Error('Invalid user data');
@@ -55,31 +74,15 @@ exports.loginUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Please fill all fields');
   }
-
   const user = await User.findOne({ name });
 
   //check if user exists and compare password
   if (user && (await bcrypt.compare(password, user.password))) {
-    const accessToken = jwt.sign(
-      {
-        user: {
-          id: user._id,
-          name: user.name,
-        },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '30d' }
-    );
-    res.status(200).json({
-      status: 'success',
-      data: {
-        user,
-        accessToken,
-      },
-    });
+    req.session.user = user;
+    res.redirect('/');
   } else {
     res.status(400);
-    throw new Error('Invalid username or password');
+    res.render('login', { message: 'Invalid username or password' });
   }
 });
 
@@ -94,3 +97,33 @@ exports.getCurrentUser = (req, res) => {
     },
   });
 };
+
+exports.showDashboad = async (req, res) => {
+  try {
+    res.render('dashboard', { user: req.session.user });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+//@desc logout user
+//@route GET /api/v1/users/logout
+//@access Private
+exports.logoutUser = asyncHandler(async (req, res) => {
+  try {
+    const expiredToken = jwt.sign({}, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: 1,
+    });
+
+    res.cookie('token', expiredToken, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 1),
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    req.session.destroy();
+    res.redirect('/login');
+  } catch (err) {
+    console.log(err.message);
+  }
+});
