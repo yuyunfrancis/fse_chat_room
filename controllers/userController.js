@@ -81,16 +81,16 @@ exports.loginUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Invalid username or password');
   }
-
-  //@desc get current logged in user
-  //@route GET /api/v1/users/current
-  //@access Private
-  exports.getCurrentUser = (req, res) => {
-    res.status(200).json({
-      status: 'success',
-      data: {
-        user: req.user,
-      },
-    });
-  };
 });
+
+//@desc get current logged in user
+//@route GET /api/v1/users/current
+//@access Private
+exports.getCurrentUser = (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: req.user,
+    },
+  });
+};
