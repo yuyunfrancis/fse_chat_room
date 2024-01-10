@@ -1,0 +1,112 @@
+/* chat screen */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(to right, #1c00f2, #453f96);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.chatbox {
+    background: #1d61c2;
+    width: 70%;
+    min-width: 250px;
+    display: flex;
+}
+
+.col-1 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.col-2 {
+    flex-basis: 250px;
+    background: #3874c9;
+}
+
+.msg-row {
+    display: flex;
+    align-items: center;
+    margin: 40px;
+    justify-content: flex-start;
+    /* Left-align messages */
+}
+
+.msg-text {
+    background: rgb(255, 255, 255, 0.1);
+    padding: 20px 40px;
+    border-radius: 8px;
+    flex-basis: 70%;
+    font-weight: 300;
+}
+
+.msg-text h2 {
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.msg-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 5px 15px 5px 8px;
+    align-items: center;
+    justify-content: center;
+    background: aliceblue;
+    margin: 0 20px;
+}
+
+.msg-img {
+    width: 25px;
+    height: 25px;
+    align-self: center;
+}
+
+.msg-row2 {
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+    /* Right-align messages */
+}
+
+.msg-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 5px;
+    justify-content: flex-end;
+    align-self: flex-end;
+}
+
+.chat-input {
+    display: flex;
+    justify-content: space-between;
+    background: #3874c9;
+    padding: 10px;
+    border-top: 2px solid #1d61c2;
+    width: 100%;
+}
+
+.col-1 input {
+    border: 0;
+    outline: none;
+    padding: 20px 40px;
+    font-size: 16px;
+    background: #3874c9;
+    color: #fff;
+    width: 60%;
+    font-weight: 300;
+}
+
+::placeholder {
+    color: #fff;
+}

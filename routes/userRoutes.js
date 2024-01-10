@@ -22,6 +22,8 @@ router.route('/').get(auth.isLogin, userController.showDashboad);
 
 router.route('/current').get(validateToken, userController.getCurrentUser);
 
+router.route('/save-chat').post(userController.saveChat);
+
 router.route('*', function (req, res) {
   res.redirect('/');
 });
