@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/userController');
+const chatController = require('../controllers/chatController');
 const validateToken = require('../middleware/validateTokenHandler');
 const auth = require('../middleware/auth');
 
@@ -22,7 +23,8 @@ router.route('/').get(auth.isLogin, userController.showDashboad);
 
 router.route('/current').get(validateToken, userController.getCurrentUser);
 
-router.route('/save-chat').post(userController.saveChat);
+router.route('/save-chat').post(chatController.saveChat);
+router.route('/get-chats').get(auth.isLogin, chatController.getChats);
 
 router.route('*', function (req, res) {
   res.redirect('/');

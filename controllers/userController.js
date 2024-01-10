@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-const Chat = require('../models/chatModel');
 
 exports.showRegisterForm = async (req, res) => {
   try {
@@ -105,27 +104,6 @@ exports.showDashboad = async (req, res) => {
     res.render('dashboard', { user: req.session.user, users: users });
   } catch (err) {
     console.log(err.message);
-  }
-};
-
-exports.saveChat = async (req, res) => {
-  try {
-    var chat = new Chat({
-      sender_id: req.body.sender_id,
-      receiver_id: req.body.receiver_id,
-      message: req.body.message,
-    });
-
-    var newChat = await chat.save();
-    res
-      .status(201)
-      .send({
-        success: true,
-        message: 'chat saved successfully',
-        data: newChat,
-      });
-  } catch (err) {
-    res.status(400).send({ success: false, message: err.message });
   }
 };
 

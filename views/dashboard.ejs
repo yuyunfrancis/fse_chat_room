@@ -19,39 +19,6 @@
       <div class="container">
         <div class="chatbox">
           <div class="col-1">
-            <!-- <div class="msg-row">
-               <div class="msg-text">
-                <span class="msg-time">10:30 AM</span>
-                <h2>Francis Yuyun</h2>
-                <p>I am waiting for your reply</p>
-              </div> 
-              <div class="msg-avatar">
-                <img src="images/avatar_icon.png" alt="" class="msg-img" />
-              </div> 
-            </div>
-
-            <div class="msg-row msg-row2">
-              <div class="msg-avatar">
-                <img src="images/avatar_icon.png" alt="" class="msg-img" />
-              </div>
-              <div class="msg-text">
-                <span class="msg-time">10:35 AM</span>
-                <h2>Francis Yuyun</h2>
-                <p>I am waiting for your reply</p>
-              </div>
-            </div>
-
-            <div class="msg-row">
-              <div class="msg-text">
-                <span class="msg-time">10:30 AM</span>
-                <h2>Francis Yuyun</h2>
-                <p>I am waiting for your reply</p>
-              </div>
-              <div class="msg-avatar">
-                <img src="images/avatar_icon.png" alt="" class="msg-img" />
-              </div>
-            </div> -->
-
             <form id="chat-form" method="" class="chat-input">
               <input
                 id="message"
@@ -81,75 +48,75 @@
       <!-- <script src="/socket.io/socket.io.js"></script> -->
 
       <script>
-        var sender_id = '<%= user._id %>';
-        var receiver_id;
-        var socket = io('/user-namespace', {
-          auth: {
-            token: '<%= user._id %>',
-          },
-        });
-
-        // save chats
-        $('#chat-form').submit(function (e) {
-          e.preventDefault();
-          var message = $('#message').val();
-
-          $.ajax({
-            url: '/save-chat',
-            type: 'POST',
-            data: {
-              sender_id: sender_id,
-              receiver_id: receiver_id,
-              message: message,
+        $(document).ready(function () {
+          var sender_id = '<%= user._id %>';
+          var receiver_id;
+          var socket = io('/user-namespace', {
+            auth: {
+              token: '<%= user._id %>',
             },
-            success: function (response) {
-              if (response.success) {
-                console.log(response);
+          });
 
-                $('#message').val('');
-                let chat = response.data.message;
-                let messageSender = response.data.sender_id;
+          // save chats
+          $('#chat-form').submit(function (e) {
+            e.preventDefault();
+            var message = $('#message').val();
 
-                let cssClass = sender_id === messageSender ? 'msg-row2' : '';
+            $.ajax({
+              url: '/save-chat',
+              type: 'POST',
+              data: {
+                sender_id: sender_id,
+                message: message,
+              },
+              success: function (response) {
+                if (response.success) {
+                  console.log(response);
 
-                let html = `<div class="msg-row ${cssClass}">
+                  $('#message').val('');
+                  let chat = response.data.message;
+                  let messageSender = response.data.sender_id;
+                  let createdAt = response.data.createdAt;
+
+                  let cssClass = sender_id === messageSender ? 'msg-row2' : '';
+
+                  let html = `<div class="msg-row ${cssClass}">
             <div class="msg-avatar">
               <img src="images/avatar_icon.png" alt="" class="msg-img" />
             </div>
             <div class="msg-text">
-              <span class="msg-time">10:30 AM</span>
+              <span class="msg-time">${createdAt}</span>
               <h2>${messageSender}</h2>
               <p>${chat}</p>
             </div>
           </div>`;
 
-                $('.col-1').append(html);
-                socket.emit('newChat', response.data);
-              } else {
-                alert(response.msg);
-              }
-            },
-            error: function (error) {
-              console.log(error);
-              alert('Error sending message.');
-            },
+                  $('.col-1').append(html);
+                  socket.emit('newChat', response.data);
+                } else {
+                  alert(response.msg);
+                }
+              },
+              error: function (error) {
+                console.log(error);
+                alert('Error sending message.');
+              },
+            });
           });
-        });
-        socket.on('loadNewChat', function (data) {
-       
-
-          let html = `<div class="msg-row">
+          socket.on('loadNewChat', function (data) {
+            let html = `<div class="msg-row">
             <div class="msg-avatar">
               <img src="images/avatar_icon.png" alt="" class="msg-img" />
             </div>
             <div class="msg-text">
-              <span class="msg-time">10:30 AM</span>
+              <span class="msg-time">${data.createdAt}</span>
               <h2>${data.sender_id}</h2>
               <p>${data.message}</p>
             </div>
           </div>`;
 
-          $('.col-1').append(html);
+            $('.col-1').append(html);
+          });
         });
       </script>
     </body>

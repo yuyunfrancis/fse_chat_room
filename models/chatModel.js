@@ -6,10 +6,6 @@ const chatSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    receiver_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
     message: {
       type: String,
       required: [true, 'Please message is required'],
