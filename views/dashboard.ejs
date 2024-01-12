@@ -1,124 +1,160 @@
-<span style="font-family: verdana, geneva, sans-serif">
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <title>FSE chat room | CMU-Africa</title>
-      <link rel="stylesheet" href="css/dashboard.css" />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-      />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FSE chat room | CMU-Africa</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  </head>
 
-      <!-- <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script> -->
-      <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    </head>
-
-    <body>
-      <div class="container">
-        <div class="chatbox">
-          <div class="col-1">
-            <form id="chat-form" method="" class="chat-input">
-              <input
-                id="message"
-                type="text"
-                placeholder="Type your message..."
-              />
-              <button type="submit">send</button>
-            </form>
-          </div>
-          <div class="col-2">
-            <ul style="justify-content: flex-start">
-              <!-- list all users -->
-              <% users.forEach(function(user) { %>
-              <li>
-                <a href="/chat/<%= user._id %>">
-                  <div class="user-info">
-                    <p><%= user.name %></p>
-                  </div>
-                </a>
-              </li>
-              <% }); %>
-            </ul>
+  <body>
+    <div class="container">
+      <div class="chatbox">
+        <div class="col-1">
+          <div class="chat-messages" id="chat-messages">
+            <!-- Chat messages will be dynamically added here -->
           </div>
         </div>
+        <div class="col-2">
+          <form id="chat-form" method="" class="chat-input">
+            <input
+              id="message"
+              type="text"
+              placeholder="Type your message..."
+              style="width: 100%"
+            />
+            <button type="submit">send</button>
+          </form>
+        </div>
       </div>
+    </div>
 
-      <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script>
+      $(document).ready(function () {
+        var sender_id = '<%= user._id %>';
+        var receiver_id;
+        var socket = io('/user-namespace', {
+          auth: {
+            token: '<%= user._id %>',
+          },
+        });
 
-      <script>
-        $(document).ready(function () {
-          var sender_id = '<%= user._id %>';
-          var receiver_id;
-          var socket = io('/user-namespace', {
-            auth: {
-              token: '<%= user._id %>',
+        function scrollToBottom() {
+          var chatMessages = document.getElementById('chat-messages');
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function loadChatHistory() {
+          $.ajax({
+            url: '/get-chats',
+            type: 'GET',
+            data: {},
+            success: function (response) {
+              if (response.success) {
+                response.data.reverse();
+                response.data.forEach(function (chatData) {
+                  displayChatMessage(chatData);
+                });
+                scrollToBottom();
+              } else {
+                alert(response.msg);
+              }
+            },
+            error: function (error) {
+              console.log(error);
+              alert('Error loading chat history.');
             },
           });
+        }
 
-          // save chats
-          $('#chat-form').submit(function (e) {
-            e.preventDefault();
-            var message = $('#message').val();
+        function displayChatMessage(data) {
+          var chatMessages = $('#chat-messages');
+          var cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
 
-            $.ajax({
-              url: '/save-chat',
-              type: 'POST',
-              data: {
-                sender_id: sender_id,
-                message: message,
-              },
-              success: function (response) {
-                if (response.success) {
-                  console.log(response);
+          var html = `<div class="msg-row ${cssClass}">
+                                <div class="msg-avatar">
+                                    <img src="images/avatar_icon.png" alt="" class="msg-img" />
+                                </div>
+                                <div class="msg-text">
+                                    <span class="msg-time">${
+                                      data.createdAt
+                                    }</span>
+                                    <h2>${
+                                      data.sender_id._id === sender_id
+                                        ? 'Me'
+                                        : data.sender_id.name
+                                    }</h2>
+                                    <p>${data.message}</p>
+                                </div>
+                            </div>`;
 
-                  $('#message').val('');
-                  let chat = response.data.message;
-                  let messageSender = response.data.sender_id;
-                  let createdAt = response.data.createdAt;
+          chatMessages.prepend(html);
+        }
 
-                  let cssClass = sender_id === messageSender ? 'msg-row2' : '';
+        function appendChatMessage(data) {
+          var chatMessages = $('#chat-messages');
+          var cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
 
-                  let html = `<div class="msg-row ${cssClass}">
-            <div class="msg-avatar">
-              <img src="images/avatar_icon.png" alt="" class="msg-img" />
-            </div>
-            <div class="msg-text">
-              <span class="msg-time">${createdAt}</span>
-              <h2>${messageSender}</h2>
-              <p>${chat}</p>
-            </div>
-          </div>`;
+          var html = `<div class="msg-row ${cssClass}">
+                    <div class="msg-avatar">
+                        <img src="images/avatar_icon.png" alt="" class="msg-img" />
+                    </div>
+                    <div class="msg-text">
+                        <span class="msg-time">${data.createdAt}</span>
+                        <h2>${
+                          data.sender_id._id === sender_id
+                            ? 'Me'
+                            : data.sender_id.name
+                        }</h2>
+                        <p>${data.message}</p>
+                    </div>
+                </div>`;
 
-                  $('.col-1').append(html);
-                  socket.emit('newChat', response.data);
-                } else {
-                  alert(response.msg);
-                }
-              },
-              error: function (error) {
-                console.log(error);
-                alert('Error sending message.');
-              },
-            });
-          });
-          socket.on('loadNewChat', function (data) {
-            let html = `<div class="msg-row">
-            <div class="msg-avatar">
-              <img src="images/avatar_icon.png" alt="" class="msg-img" />
-            </div>
-            <div class="msg-text">
-              <span class="msg-time">${data.createdAt}</span>
-              <h2>${data.sender_id}</h2>
-              <p>${data.message}</p>
-            </div>
-          </div>`;
+          chatMessages.append(html);
+        }
 
-            $('.col-1').append(html);
+        // Call the function to load chat history when the page loads
+        loadChatHistory();
+
+        // save chats
+        $('#chat-form').submit(function (e) {
+          e.preventDefault();
+          var message = $('#message').val();
+
+          $.ajax({
+            url: '/save-chat',
+            type: 'POST',
+            data: {
+              sender_id: sender_id,
+              message: message,
+            },
+            success: function (response) {
+              if (response.success) {
+                $('#message').val('');
+                appendChatMessage(response.data);
+                scrollToBottom();
+                socket.emit('newChat', response.data);
+              } else {
+                alert(response.msg);
+              }
+            },
+            error: function (error) {
+              console.log(error);
+              alert('Error sending message.');
+            },
           });
         });
-      </script>
-    </body>
-  </html>
-</span>
+
+        socket.on('loadNewChat', function (data) {
+          appendChatMessage(data);
+          scrollToBottom();
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -3,12 +3,13 @@ const asyncHandler = require('express-async-handler');
 
 exports.saveChat = async (req, res) => {
   try {
-    var chat = new Chat({
+    let chat = new Chat({
       sender_id: req.body.sender_id,
       message: req.body.message,
     });
 
-    var newChat = await chat.save();
+    let newChat = await chat.save();
+    newChat = await newChat.populate('sender_id', 'name');
     res.status(201).send({
       success: true,
       message: 'chat saved successfully',

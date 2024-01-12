@@ -14,6 +14,7 @@
     align-items: center;
     justify-content: center;
     color: #fff;
+    overflow: hidden;
 }
 
 .chatbox {
@@ -21,25 +22,27 @@
     width: 70%;
     min-width: 250px;
     display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .col-1 {
     flex: 1;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .col-2 {
-    flex-basis: 250px;
-    background: #3874c9;
+    /* flex-basis: 250px;
+    background: #3874c9; */
 }
 
 .msg-row {
     display: flex;
     align-items: center;
-    margin: 40px;
-    justify-content: flex-start;
-    /* Left-align messages */
+    margin: 20px 40px;
+    justify-content: flex-start
 }
 
 .msg-text {
@@ -93,18 +96,27 @@
     background: #3874c9;
     padding: 10px;
     border-top: 2px solid #1d61c2;
-    width: 100%;
 }
 
-.col-1 input {
+input {
     border: 0;
     outline: none;
-    padding: 20px 40px;
+    padding: 10px;
     font-size: 16px;
     background: #3874c9;
     color: #fff;
-    width: 60%;
-    font-weight: 300;
+    flex: 1;
+    margin-right: 10px;
+}
+
+button {
+    border: 0;
+    outline: none;
+    padding: 10px;
+    font-size: 16px;
+    background: #1d61c2;
+    color: #fff;
+    cursor: pointer;
 }
 
 ::placeholder {
