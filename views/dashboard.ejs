@@ -17,7 +17,7 @@
       <div class="chatbox">
         <div class="col-1">
           <div class="chat-messages" id="chat-messages">
-            <!-- Chat messages will be dynamically added here -->
+            <!-- This is where the chat messages are added -->
           </div>
         </div>
         <div class="col-2">
@@ -37,7 +37,6 @@
     <script>
       $(document).ready(function () {
         var sender_id = '<%= user._id %>';
-        var receiver_id;
         var socket = io('/user-namespace', {
           auth: {
             token: '<%= user._id %>',
@@ -118,10 +117,10 @@
           chatMessages.append(html);
         }
 
-        // Call the function to load chat history when the page loads
+        // This function is aimed at loading the previous chat before allowing users to send messages
         loadChatHistory();
 
-        // save chats
+        // save chats to database
         $('#chat-form').submit(function (e) {
           e.preventDefault();
           var message = $('#message').val();
@@ -150,6 +149,7 @@
           });
         });
 
+        // listen for new chat
         socket.on('loadNewChat', function (data) {
           appendChatMessage(data);
           scrollToBottom();

@@ -23,7 +23,7 @@ router.route('/').get(auth.isLogin, userController.showDashboad);
 
 router.route('/current').get(validateToken, userController.getCurrentUser);
 
-router.route('/save-chat').post(chatController.saveChat);
+router.route('/save-chat').post(auth.isLogin, chatController.saveChat);
 router.route('/get-chats').get(auth.isLogin, chatController.getChats);
 
 router.route('*', function (req, res) {

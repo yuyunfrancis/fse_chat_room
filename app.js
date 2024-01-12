@@ -51,7 +51,7 @@ const userNamespace = io.of('/user-namespace');
 userNamespace.on('connection', async (socket) => {
   console.log('Connected to user namespace');
 
-  // console.log(socket.handshake.auth.token);
+  console.log(socket.handshake.auth.token);
   var userId = socket.handshake.auth.token;
   await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: '1' } });
 
