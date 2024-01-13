@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>FSE chat room | CMU-Africa</title>
     <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/header.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -14,6 +15,8 @@
 
   <body>
     <div class="container">
+       <div class="container">
+      <%- include('layout/header.ejs') %>
       <div class="chatbox">
         <div class="col-1">
           <div class="chat-messages" id="chat-messages">
@@ -74,12 +77,13 @@
         function displayChatMessage(data) {
           var chatMessages = $('#chat-messages');
           var cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
+          let messageClass = data.sender_id._id === sender_id ? 'msg-text2' : '';
 
           var html = `<div class="msg-row ${cssClass}">
                                 <div class="msg-avatar">
                                     <img src="images/avatar_icon.png" alt="" class="msg-img" />
                                 </div>
-                                <div class="msg-text">
+                                <div class="msg-text ${messageClass}">
                                     <span class="msg-time">${
                                       data.createdAt
                                     }</span>
@@ -98,12 +102,13 @@
         function appendChatMessage(data) {
           var chatMessages = $('#chat-messages');
           var cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
+            let messageClass = data.sender_id._id === sender_id ? 'msg-text2' : '';
 
           var html = `<div class="msg-row ${cssClass}">
                     <div class="msg-avatar">
                         <img src="images/avatar_icon.png" alt="" class="msg-img" />
                     </div>
-                    <div class="msg-text">
+                    <div class="msg-text ${messageClass}">
                         <span class="msg-time">${data.createdAt}</span>
                         <h2>${
                           data.sender_id._id === sender_id

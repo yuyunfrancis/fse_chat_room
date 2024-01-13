@@ -1,0 +1,30 @@
+header {
+    background-color: #fff;
+    color: #454545;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logout a {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: #35984F;
+    transition: background-color 0.3s ease;
+}
+
+.logout a:hover {
+    background-color: #00801cfb;
+}

@@ -58,7 +58,7 @@ userNamespace.on('connection', async (socket) => {
   socket.on('disconnect', async () => {
     console.log('User disconnected');
 
-    var userId = socket.handshake.auth.token;
+    // var userId = socket.handshake.auth.token;
     await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: '0' } });
 
     socket.broadcast.emit('getOfflineUser', { user_id: userId });
