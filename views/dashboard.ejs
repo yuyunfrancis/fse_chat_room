@@ -39,16 +39,36 @@
 
     <script>
       $(document).ready(function () {
-        var sender_id = '<%= user._id %>';
-        var socket = io('/user-namespace', {
+        let sender_id = '<%= user._id %>';
+        let socket = io('/user-namespace', {
           auth: {
             token: '<%= user._id %>',
           },
         });
 
         function scrollToBottom() {
-          var chatMessages = document.getElementById('chat-messages');
+          let chatMessages = document.getElementById('chat-messages');
           chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+
+        // Format createdAt to Date and timestamp
+        function formatDate(date) {
+          let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = d.getHours(),
+            minute = d.getMinutes(),
+            second = d.getSeconds();
+
+          if (month.length < 2) month = '0' + month;
+          if (day.length < 2) day = '0' + day;
+          if (hour.length < 2) hour = '0' + hour;
+          if (minute.length < 2) minute = '0' + minute;
+          if (second.length < 2) second = '0' + second;
+
+          return [year, month, day].join('-') + ' ' + [hour, minute, second].join(':');
         }
 
         function loadChatHistory() {
@@ -75,17 +95,21 @@
         }
 
         function displayChatMessage(data) {
-          var chatMessages = $('#chat-messages');
-          var cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
+          let chatMessages = $('#chat-messages');
+          let cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
           let messageClass = data.sender_id._id === sender_id ? 'msg-text2' : '';
+          let timeCss = data.sender_id._id !== sender_id ? 'msg-time2' : '';
 
-          var html = `<div class="msg-row ${cssClass}">
+          const messageDate = data.createdAt
+          const formattedDate = formatDate(messageDate)
+
+          let html = `<div class="msg-row ${cssClass}">
                                 <div class="msg-avatar">
                                     <img src="images/avatar_icon.png" alt="" class="msg-img" />
                                 </div>
                                 <div class="msg-text ${messageClass}">
-                                    <span class="msg-time">${
-                                      data.createdAt
+                                    <span class="msg-time ${timeCss}">${
+                                     formattedDate
                                     }</span>
                                     <h2>${
                                       data.sender_id._id === sender_id
@@ -100,16 +124,20 @@
         }
 
         function appendChatMessage(data) {
-          var chatMessages = $('#chat-messages');
-          var cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
+          let chatMessages = $('#chat-messages');
+          let cssClass = sender_id === data.sender_id._id ? 'msg-row2' : '';
             let messageClass = data.sender_id._id === sender_id ? 'msg-text2' : '';
+             const messageDate = data.createdAt
+          const formattedDate = formatDate(messageDate)
+          let timeCss = data.sender_id._id !== sender_id ? 'msg-time2' : '';
 
-          var html = `<div class="msg-row ${cssClass}">
+
+          let html = `<div class="msg-row ${cssClass}">
                     <div class="msg-avatar">
                         <img src="images/avatar_icon.png" alt="" class="msg-img" />
                     </div>
                     <div class="msg-text ${messageClass}">
-                        <span class="msg-time">${data.createdAt}</span>
+                        <span class="msg-time ${timeCss}">${formattedDate}</span>
                         <h2>${
                           data.sender_id._id === sender_id
                             ? 'Me'
@@ -128,7 +156,7 @@
         // save chats to database
         $('#chat-form').submit(function (e) {
           e.preventDefault();
-          var message = $('#message').val();
+          let message = $('#message').val();
 
           $.ajax({
             url: '/save-chat',
@@ -159,6 +187,8 @@
           appendChatMessage(data);
           scrollToBottom();
         });
+
+        
       });
     </script>
   </body>

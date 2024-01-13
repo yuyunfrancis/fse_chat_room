@@ -57,7 +57,7 @@ exports.registerUser = asyncHandler(async (req, res) => {
     //     user,
     //   },
     // });
-    res.render('register', { message: 'User created successfully' });
+    res.render('register', { message: 'User created successfully,' });
   } else {
     res.status(400);
     throw new Error('Invalid user data');

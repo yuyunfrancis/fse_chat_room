@@ -97,6 +97,10 @@
     align-self: flex-end;
 }
 
+.msg-time2 {
+    color: #454545;
+}
+
 .chat-input {
     display: flex;
     justify-content: space-between;
