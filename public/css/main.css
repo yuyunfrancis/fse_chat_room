@@ -96,10 +96,6 @@ form input {
     color: green;
 }
 
-.icons i:last-child {
-    color: blue;
-}
-
 .not-member {
     font-size: 0.8rem;
     margin-top: 1.4rem;
