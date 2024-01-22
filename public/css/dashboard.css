@@ -34,11 +34,6 @@
     overflow-y: auto;
 }
 
-/* .col-2 {
-    flex-basis: 250px;
-    background: #3874c9;
-} */
-
 .msg-row {
     display: flex;
     align-items: center;
